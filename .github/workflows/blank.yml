@@ -34,7 +34,7 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
-          echo ${{ secret.SSHKEY }} > chave.pem
+          echo ${{ secrets.SSHKEY }} > chave.pem
           chmod 600 chave.pem
           ssh -i chave.pem gestor@20.199.129.62
           #scp -i chave.pem gestor@20.199.129.62:/index.html /var/www/html/index.html
