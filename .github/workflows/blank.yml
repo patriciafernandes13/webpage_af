@@ -30,8 +30,10 @@ jobs:
       - name: Run a one-line script
         run: echo Hello, world!
 
-      # Runs a set of commands using the runners shell    
-      - name: Run a multi-line script
+      - name: Install SSH client
+        run: sudo apt-get update && sudo apt-get install -y openssh-client
+
+      - name: Add SSH private key
         run: |
           pwd
           ls -l
@@ -40,6 +42,10 @@ jobs:
           echo "${{ secrets.SSHKEY }}" > chave.pem
           ls -l
           chmod 600 chave.pem
-          ssh -o StrictHostKeyChecking=no -i chave.pem gestor@20.199.129.62 "sudo apt update; sudo apt install apache2; sudo chmod -R 777 /var/www/html"
+
+      - name: Deploy to Azure VM
+        run: |
+          ssh -o StrictHostKeyChecking=no -i chave.pem gestor@20.199.129.62 "sudo apt update && sudo apt install -y apache2 && sudo chown -R gestor:www-data /var/www/html"
           scp -o StrictHostKeyChecking=no -i chave.pem ./index.html gestor@20.199.129.62:/var/www/html/index.html
+          scp -o StrictHostKeyChecking=no -i chave.pem ./login.html gestor@20.199.129.62:/var/www/html/login.html
           ls -l
